@@ -34,7 +34,7 @@ Fitur berikut **sengaja tidak dibangun di v1** (kandidat v2+ jika dibutuhkan nan
 ## 5. Ruang Lingkup Fungsional (v1)
 
 ### 5.1 Autentikasi
-- Login dengan PIN 4-digit statis (`1234`, hardcoded untuk v1, tidak ada UI ganti PIN).
+- Login dengan password statis (`password`, hardcoded untuk v1, tidak ada UI ganti password).
 - Tidak ada multi-akun/role.
 
 ### 5.2 Kelola Menu (Admin)
@@ -71,7 +71,7 @@ Fitur berikut **sengaja tidak dibangun di v1** (kandidat v2+ jika dibutuhkan nan
 - **Platform**: web app, responsif untuk HP dan tablet (browser).
 - **Konektivitas**: asumsi online-first (butuh koneksi internet aktif ke database). Tidak dibangun mode offline di v1 karena owner belum yakin kondisi jaringan — jika nanti sering putus, ini jadi kandidat v2.
 - **Stack yang diinginkan owner**: Supabase (database/backend), Vercel (hosting/deploy), GitHub (source control). Framework frontend akan direkomendasikan saat masuk tahap implementasi (mis. Next.js) — bukan bagian dari keputusan PRD ini.
-- **Keamanan**: PIN statis cukup untuk v1 karena hanya 1 pengguna di 1 perangkat; tidak ada data sensitif pelanggan yang disimpan.
+- **Keamanan**: password statis cukup untuk v1 karena hanya 1 pengguna di 1 perangkat; tidak ada data sensitif pelanggan yang disimpan.
 
 ## 7. Model Data (Tingkat Tinggi)
 
@@ -79,7 +79,7 @@ Fitur berikut **sengaja tidak dibangun di v1** (kandidat v2+ jika dibutuhkan nan
 - **Table**: id, nomor, status (`empty` / `occupied`)
 - **Order**: id, table_id, status (`open` / `paid` / `cancelled`), subtotal, discount, service_charge, tax, total, payment_method, created_at, paid_at
 - **OrderItem**: id, order_id, menu_item_id, qty, price_at_order (snapshot harga saat order dibuat)
-- **Settings**: pin, tax_percent, service_charge_percent
+- **Settings**: password, tax_percent, service_charge_percent
 
 ## 8. Asumsi & Hal yang Perlu Dikonfirmasi
 

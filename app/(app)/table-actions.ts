@@ -10,7 +10,19 @@ export async function startOrder(tableId: string) {
     .select("id")
     .single();
 
-  if (error || !order) {
+  if (error) {
+    // Another request already opened an order for this table (e.g. a
+    // double submit) — the unique index on (table_id) where status='open'
+    // rejects the duplicate. Just go to the existing open order instead.
+    if (error.code === "23505") {
+      const { data: existing } = await supabase
+        .from("orders")
+        .select("id")
+        .eq("table_id", tableId)
+        .eq("status", "open")
+        .single();
+      if (existing) redirect(`/orders/${existing.id}`);
+    }
     throw new Error("Gagal membuat pesanan");
   }
 

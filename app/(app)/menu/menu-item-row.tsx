@@ -1,8 +1,7 @@
 "use client";
 
-import { useState, useTransition } from "react";
 import Link from "next/link";
-import { deleteMenuItem, toggleAvailability } from "./actions";
+import { useMenuItemActions } from "./use-menu-item-actions";
 import type { Tables } from "@/lib/database.types";
 
 export default function MenuItemRow({
@@ -10,25 +9,8 @@ export default function MenuItemRow({
 }: {
   item: Tables<"menu_items">;
 }) {
-  const [isPending, startTransition] = useTransition();
-  const [error, setError] = useState<string | null>(null);
-
-  function handleToggle() {
-    setError(null);
-    startTransition(async () => {
-      const result = await toggleAvailability(item.id, item.is_available);
-      if (result.error) setError(result.error);
-    });
-  }
-
-  function handleDelete() {
-    if (!window.confirm(`Hapus menu "${item.nama}"?`)) return;
-    setError(null);
-    startTransition(async () => {
-      const result = await deleteMenuItem(item.id);
-      if (result.error) setError(result.error);
-    });
-  }
+  const { isPending, error, handleToggle, handleDelete } =
+    useMenuItemActions(item);
 
   return (
     <tr className="border-b border-zinc-200 dark:border-zinc-800">

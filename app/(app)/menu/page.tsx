@@ -1,6 +1,9 @@
 import Link from "next/link";
 import { supabase } from "@/lib/supabase";
 import MenuItemRow from "./menu-item-row";
+import MenuItemCard from "./menu-item-card";
+
+export const dynamic = "force-dynamic";
 
 export default async function MenuPage() {
   const { data: items } = await supabase
@@ -24,33 +27,38 @@ export default async function MenuPage() {
           </Link>
         </div>
 
-        <div className="overflow-x-auto rounded-2xl border border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-950">
-          <table className="w-full">
-            <thead>
-              <tr className="border-b border-zinc-200 text-left text-xs font-medium uppercase text-zinc-500 dark:border-zinc-800 dark:text-zinc-400">
-                <th className="px-4 py-3">Nama</th>
-                <th className="px-4 py-3">Kategori</th>
-                <th className="px-4 py-3">Harga</th>
-                <th className="px-4 py-3">Status</th>
-                <th className="px-4 py-3 text-right">Aksi</th>
-              </tr>
-            </thead>
-            <tbody>
-              {items && items.length > 0 ? (
-                items.map((item) => <MenuItemRow key={item.id} item={item} />)
-              ) : (
-                <tr>
-                  <td
-                    colSpan={5}
-                    className="px-4 py-8 text-center text-sm text-zinc-500 dark:text-zinc-400"
-                  >
-                    Belum ada menu.
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
+        {items && items.length > 0 ? (
+          <>
+            <div className="rounded-2xl border border-zinc-200 bg-white sm:hidden dark:border-zinc-800 dark:bg-zinc-950">
+              {items.map((item) => (
+                <MenuItemCard key={item.id} item={item} />
+              ))}
+            </div>
+
+            <div className="hidden overflow-x-auto rounded-2xl border border-zinc-200 bg-white sm:block dark:border-zinc-800 dark:bg-zinc-950">
+              <table className="w-full">
+                <thead>
+                  <tr className="border-b border-zinc-200 text-left text-xs font-medium uppercase text-zinc-500 dark:border-zinc-800 dark:text-zinc-400">
+                    <th className="px-4 py-3">Nama</th>
+                    <th className="px-4 py-3">Kategori</th>
+                    <th className="px-4 py-3">Harga</th>
+                    <th className="px-4 py-3">Status</th>
+                    <th className="px-4 py-3 text-right">Aksi</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {items.map((item) => (
+                    <MenuItemRow key={item.id} item={item} />
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </>
+        ) : (
+          <div className="rounded-2xl border border-zinc-200 bg-white px-4 py-8 text-center text-sm text-zinc-500 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-400">
+            Belum ada menu.
+          </div>
+        )}
       </div>
     </div>
   );

@@ -1,6 +1,8 @@
 import { supabase } from "@/lib/supabase";
 import SettingsForm from "./settings-form";
 
+export const dynamic = "force-dynamic";
+
 export default async function SettingsPage() {
   const { data } = await supabase
     .from("settings")

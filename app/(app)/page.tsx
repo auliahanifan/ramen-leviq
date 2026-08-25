@@ -2,6 +2,8 @@ import Link from "next/link";
 import { supabase } from "@/lib/supabase";
 import { startOrder } from "./table-actions";
 
+export const dynamic = "force-dynamic";
+
 export default async function TablesPage() {
   const [{ data: tables }, { data: openOrders }] = await Promise.all([
     supabase.from("tables").select("*").order("nomor"),

@@ -12,7 +12,7 @@
   --rule: oklch(78% 0.03 85);
   --rule-2: oklch(84% 0.028 85);
 
-  --accent: oklch(60% 0.19 250);
+  --accent: oklch(60% 0.22 25);
   --accent-2: oklch(32% 0.14 250);
   --accent-ink: oklch(97% 0.02 90);
   --focus: oklch(55% 0.19 250);
@@ -39,7 +39,7 @@
     --rule: oklch(32% 0.025 60);
     --rule-2: oklch(27% 0.022 60);
 
-    --accent: oklch(66% 0.17 250);
+    --accent: oklch(66% 0.19 25);
     --accent-2: oklch(62% 0.13 250);
     --accent-ink: oklch(14% 0.02 30);
     --focus: oklch(70% 0.18 250);

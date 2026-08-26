@@ -26,6 +26,11 @@ all built from the typography/color/spacing/motion rules below:
   enrichment (a rotated "LUNAS" stamp) is allowed.
 - **App shell**: persistent top bar — bold display wordmark, double rule
   beneath in `--color-accent-2`, active route underlined in `--color-accent`.
+  Exception: `/order` (public self-order, no staff login) renders without
+  this shell — it's reached by customers scanning a table QR, so the
+  staff nav (Menu/Laporan/Pengaturan) must not appear. It composes
+  Catalogue/spec sheet (menu) and Ticket form (cart summary) directly,
+  same tokens/components as every other page.
 
 ## Theme
 

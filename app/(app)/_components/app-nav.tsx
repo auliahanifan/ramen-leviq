@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 const LINKS = [
   { href: "/", label: "Meja" },
   { href: "/menu", label: "Menu" },
+  { href: "/qr", label: "QR Meja" },
   { href: "/laporan", label: "Laporan" },
   { href: "/settings", label: "Pengaturan" },
 ];
@@ -14,8 +15,8 @@ export function AppNav() {
   const pathname = usePathname();
 
   return (
-    <nav className="border-b-4 border-double border-accent-2 bg-paper-2 px-4 py-3">
-      <div className="mx-auto flex w-full max-w-3xl items-center gap-6">
+    <nav className="border-b-4 border-double border-accent-2 bg-paper-2 px-4 py-3 print:hidden">
+      <div className="mx-auto flex w-full max-w-3xl items-center gap-6 flex-wrap">
         <span className="font-display text-lg font-black tracking-tight text-ink">
           Kasir Ramen
         </span>

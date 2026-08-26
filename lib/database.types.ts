@@ -19,6 +19,7 @@ export type Database = {
           created_at: string
           harga: number
           id: string
+          image_url: string | null
           is_available: boolean
           kategori: string
           nama: string
@@ -28,6 +29,7 @@ export type Database = {
           created_at?: string
           harga: number
           id?: string
+          image_url?: string | null
           is_available?: boolean
           kategori: string
           nama: string
@@ -37,6 +39,7 @@ export type Database = {
           created_at?: string
           harga?: number
           id?: string
+          image_url?: string | null
           is_available?: boolean
           kategori?: string
           nama?: string
@@ -47,6 +50,7 @@ export type Database = {
       order_items: {
         Row: {
           created_at: string
+          customer_name: string | null
           id: string
           menu_item_id: string
           order_id: string
@@ -55,6 +59,7 @@ export type Database = {
         }
         Insert: {
           created_at?: string
+          customer_name?: string | null
           id?: string
           menu_item_id: string
           order_id: string
@@ -63,6 +68,7 @@ export type Database = {
         }
         Update: {
           created_at?: string
+          customer_name?: string | null
           id?: string
           menu_item_id?: string
           order_id?: string

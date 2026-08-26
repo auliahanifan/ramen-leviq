@@ -18,7 +18,12 @@ export default function MenuForm({
     prevState: MenuFormState,
     formData: FormData
   ) => Promise<MenuFormState>;
-  initialValues?: { nama: string; harga: number; kategori: string };
+  initialValues?: {
+    nama: string;
+    harga: number;
+    kategori: string;
+    image_url?: string | null;
+  };
 }) {
   const [state, formAction, pending] = useActionState(action, initialState);
 
@@ -57,6 +62,23 @@ export default function MenuForm({
             name="kategori"
             type="text"
             defaultValue={initialValues?.kategori}
+            className={`mb-4 ${inputClass()}`}
+          />
+
+          <Label htmlFor="photo">Foto</Label>
+          {initialValues?.image_url && (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={initialValues.image_url}
+              alt=""
+              className="mb-2 h-24 w-24 rounded-input object-cover"
+            />
+          )}
+          <input
+            id="photo"
+            name="photo"
+            type="file"
+            accept="image/*"
             className={`mb-4 ${inputClass()}`}
           />
 

@@ -11,7 +11,7 @@ export default async function EditMenuItemPage({
   const { id } = await params;
   const { data } = await supabase
     .from("menu_items")
-    .select("nama, harga, kategori")
+    .select("nama, harga, kategori, image_url")
     .eq("id", id)
     .single();
 

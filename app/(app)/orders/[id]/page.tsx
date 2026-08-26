@@ -27,7 +27,7 @@ export default async function OrderPage({
   const [{ data: items }, { data: availableMenu }] = await Promise.all([
     supabase
       .from("order_items")
-      .select("id, qty, price_at_order, menu_items(nama)")
+      .select("id, qty, price_at_order, customer_name, menu_items(nama)")
       .eq("order_id", id)
       .order("created_at"),
     supabase
@@ -69,6 +69,11 @@ export default async function OrderPage({
                   <tr key={item.id} className="border-b border-rule last:border-0">
                     <td className="px-4 py-3 text-sm text-ink">
                       {item.menu_items?.nama}
+                      {item.customer_name && (
+                        <span className="block text-xs text-muted">
+                          oleh {item.customer_name}
+                        </span>
+                      )}
                     </td>
                     <td className="px-4 py-3 text-sm font-outlier text-ink-2">
                       {item.qty}

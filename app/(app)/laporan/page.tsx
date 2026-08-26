@@ -14,7 +14,7 @@ import TopMenuRow, { type TopMenuItem } from "./top-menu-row";
 import TopMenuCard from "./top-menu-card";
 import DailyTrendChart from "./daily-trend-chart";
 import PaymentMethodDonut from "./payment-method-donut";
-import { getSliceColor } from "./payment-method-colors";
+import { withSliceColors } from "./payment-method-colors";
 import TopMenuBarChart from "./top-menu-bar-chart";
 
 export const dynamic = "force-dynamic";
@@ -68,6 +68,7 @@ export default async function LaporanPage({
     label: PAYMENT_METHOD_LABELS[method],
     omzet: omzetByMethod.get(method) ?? 0,
   }));
+  const paymentMethodSlices = withSliceColors(paymentMethodData);
 
   const omzetPerDay = new Map<string, number>();
   for (const order of paidOrders) {
@@ -171,16 +172,16 @@ export default async function LaporanPage({
           </h2>
           {totalOmzet > 0 ? (
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-6">
-              <PaymentMethodDonut data={paymentMethodData} />
+              <PaymentMethodDonut data={paymentMethodSlices} />
               <div className="min-w-0 flex-1 space-y-2">
-                {paymentMethodData.map((entry) => (
+                {paymentMethodSlices.map((entry) => (
                   <LineRow
                     key={entry.method}
                     label={
                       <span className="inline-flex items-center gap-2">
                         <span
                           className="inline-block h-2 w-2 shrink-0 rounded-full"
-                          style={{ background: getSliceColor(paymentMethodData, entry.method) }}
+                          style={{ background: entry.color }}
                           aria-hidden
                         />
                         {entry.label}

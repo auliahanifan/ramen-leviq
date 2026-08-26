@@ -2,14 +2,14 @@
 
 import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts";
 import { formatRupiah } from "../_components/price";
-import { getSliceColor, type PaymentMethodDatum } from "./payment-method-colors";
+import type { PaymentMethodSlice } from "./payment-method-colors";
 
 function DonutTooltip({
   active,
   payload,
 }: {
   active?: boolean;
-  payload?: { payload: PaymentMethodDatum }[];
+  payload?: { payload: PaymentMethodSlice }[];
 }) {
   if (!active || !payload?.length) return null;
   const point = payload[0].payload;
@@ -26,7 +26,7 @@ function DonutTooltip({
 export default function PaymentMethodDonut({
   data,
 }: {
-  data: PaymentMethodDatum[];
+  data: PaymentMethodSlice[];
 }) {
   return (
     <div className="h-40 w-40 shrink-0">
@@ -43,7 +43,7 @@ export default function PaymentMethodDonut({
             stroke="var(--color-paper-2)"
           >
             {data.map((entry) => (
-              <Cell key={entry.method} fill={getSliceColor(data, entry.method)} />
+              <Cell key={entry.method} fill={entry.color} />
             ))}
           </Pie>
         </PieChart>

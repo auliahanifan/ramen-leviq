@@ -1,7 +1,8 @@
-import Link from "next/link";
 import { supabase } from "@/lib/supabase";
 import MenuItemRow from "./menu-item-row";
 import MenuItemCard from "./menu-item-card";
+import { Card } from "../_components/card";
+import { ButtonLink } from "../_components/button";
 
 export const dynamic = "force-dynamic";
 
@@ -13,32 +14,29 @@ export default async function MenuPage() {
     .order("nama");
 
   return (
-    <div className="flex flex-1 flex-col bg-zinc-50 px-4 py-8 dark:bg-black">
+    <div className="flex flex-1 flex-col bg-paper px-4 py-8">
       <div className="mx-auto w-full max-w-3xl">
         <div className="mb-6 flex items-center justify-between">
-          <h1 className="text-xl font-semibold text-zinc-900 dark:text-zinc-50">
+          <h1 className="font-display text-display font-bold text-ink">
             Kelola Menu
           </h1>
-          <Link
-            href="/menu/new"
-            className="rounded-lg bg-zinc-900 px-4 py-2 text-sm font-medium text-white dark:bg-zinc-50 dark:text-zinc-900"
-          >
+          <ButtonLink href="/menu/new" size="compact">
             + Tambah Menu
-          </Link>
+          </ButtonLink>
         </div>
 
         {items && items.length > 0 ? (
           <>
-            <div className="rounded-2xl border border-zinc-200 bg-white sm:hidden dark:border-zinc-800 dark:bg-zinc-950">
+            <Card padding="none" className="sm:hidden">
               {items.map((item) => (
                 <MenuItemCard key={item.id} item={item} />
               ))}
-            </div>
+            </Card>
 
-            <div className="hidden overflow-x-auto rounded-2xl border border-zinc-200 bg-white sm:block dark:border-zinc-800 dark:bg-zinc-950">
+            <Card padding="none" className="hidden overflow-x-auto sm:block">
               <table className="w-full">
                 <thead>
-                  <tr className="border-b border-zinc-200 text-left text-xs font-medium uppercase text-zinc-500 dark:border-zinc-800 dark:text-zinc-400">
+                  <tr className="border-b border-rule text-left text-xs font-semibold tracking-wide text-muted uppercase">
                     <th className="px-4 py-3">Nama</th>
                     <th className="px-4 py-3">Kategori</th>
                     <th className="px-4 py-3">Harga</th>
@@ -52,12 +50,12 @@ export default async function MenuPage() {
                   ))}
                 </tbody>
               </table>
-            </div>
+            </Card>
           </>
         ) : (
-          <div className="rounded-2xl border border-zinc-200 bg-white px-4 py-8 text-center text-sm text-zinc-500 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-400">
+          <Card className="text-center text-sm text-muted">
             Belum ada menu.
-          </div>
+          </Card>
         )}
       </div>
     </div>

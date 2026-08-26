@@ -1,6 +1,7 @@
 "use client";
 
 import { useTransition } from "react";
+import { Button } from "../../_components/button";
 
 export default function CancelOrderButton({
   action,
@@ -19,13 +20,13 @@ export default function CancelOrderButton({
   }
 
   return (
-    <button
+    <Button
       type="button"
+      variant="destructive"
       onClick={handleClick}
       disabled={isPending}
-      className="rounded-lg border border-red-300 px-4 py-3 text-base font-medium text-red-600 disabled:opacity-60 dark:border-red-800 dark:text-red-400"
     >
       {isPending ? "Membatalkan..." : "Batalkan Pesanan"}
-    </button>
+    </Button>
   );
 }

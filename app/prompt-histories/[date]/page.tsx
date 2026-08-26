@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { supabase } from "@/lib/supabase";
+import { Card } from "../../(app)/_components/card";
+import { Badge } from "../../(app)/_components/badge";
 
 export const dynamic = "force-dynamic";
 
@@ -96,54 +98,49 @@ export default async function PromptHistoryDetailPage({
   );
 
   return (
-    <div className="flex flex-1 flex-col bg-zinc-50 px-4 py-8 dark:bg-black">
+    <div className="flex flex-1 flex-col bg-paper px-4 py-8">
       <div className="mx-auto w-full max-w-2xl">
         <Link
           href="/prompt-histories"
-          className="mb-4 inline-block text-sm text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-50"
+          className="mb-4 inline-block text-sm text-muted hover:text-ink"
         >
           &larr; Semua tanggal
         </Link>
-        <h1 className="mb-6 text-xl font-semibold text-zinc-900 dark:text-zinc-50">
+        <h1 className="mb-6 font-display text-2xl font-bold text-ink">
           {formatDateLabel(date)}
         </h1>
 
         {sessions.length === 0 ? (
-          <p className="text-sm text-zinc-500 dark:text-zinc-400">
-            Tidak ada prompt di tanggal ini.
-          </p>
+          <p className="text-sm text-muted">Tidak ada prompt di tanggal ini.</p>
         ) : (
           <div className="flex flex-col gap-8">
             {sessions.map((session, index) => (
               <div key={session.sessionId}>
-                <h2 className="mb-3 text-xs font-semibold uppercase tracking-wide text-zinc-500 dark:text-zinc-400">
+                <h2 className="mb-3 text-xs font-semibold tracking-wide text-muted uppercase">
                   Sesi {index + 1} &middot; mulai{" "}
                   {formatTime(session.items[0].prompted_at)}
                 </h2>
                 <ul className="flex flex-col gap-4">
                   {session.items.map((prompt) => (
-                    <li
-                      key={prompt.id}
-                      className="rounded-2xl border border-zinc-200 bg-white p-5 dark:border-zinc-800 dark:bg-zinc-950"
-                    >
-                      <div className="mb-2 flex items-center gap-2">
-                        <p className="text-xs font-medium text-zinc-500 dark:text-zinc-400">
-                          {formatTime(prompt.prompted_at)}
+                    <li key={prompt.id}>
+                      <Card padding="compact">
+                        <div className="mb-2 flex items-center gap-2">
+                          <p className="text-xs font-medium text-muted">
+                            {formatTime(prompt.prompted_at)}
+                          </p>
+                          {prompt.kind === "answer" && (
+                            <Badge tone="info">Menjawab pertanyaan</Badge>
+                          )}
+                        </div>
+                        <p className="whitespace-pre-wrap text-sm text-ink">
+                          {prompt.content}
                         </p>
-                        {prompt.kind === "answer" && (
-                          <span className="rounded-full bg-amber-100 px-2 py-0.5 text-[10px] font-medium text-amber-800 dark:bg-amber-950 dark:text-amber-300">
-                            Menjawab pertanyaan
-                          </span>
+                        {formatMeta(prompt) && (
+                          <p className="mt-3 text-xs text-muted">
+                            {formatMeta(prompt)}
+                          </p>
                         )}
-                      </div>
-                      <p className="whitespace-pre-wrap text-sm text-zinc-900 dark:text-zinc-50">
-                        {prompt.content}
-                      </p>
-                      {formatMeta(prompt) && (
-                        <p className="mt-3 text-xs text-zinc-400 dark:text-zinc-500">
-                          {formatMeta(prompt)}
-                        </p>
-                      )}
+                      </Card>
                     </li>
                   ))}
                 </ul>

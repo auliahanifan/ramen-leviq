@@ -1,6 +1,6 @@
-import Link from "next/link";
 import { supabase } from "@/lib/supabase";
 import { startOrder } from "./table-actions";
+import { EmptyTableTile, OccupiedTableTile } from "./_components/table-status-tile";
 
 export const dynamic = "force-dynamic";
 
@@ -15,9 +15,9 @@ export default async function TablesPage() {
   );
 
   return (
-    <div className="flex flex-1 flex-col bg-zinc-50 px-4 py-8 dark:bg-black">
+    <div className="flex flex-1 flex-col bg-paper px-4 py-8">
       <div className="mx-auto w-full max-w-3xl">
-        <h1 className="mb-6 text-xl font-semibold text-zinc-900 dark:text-zinc-50">
+        <h1 className="mb-6 font-display text-display font-bold text-ink">
           Meja
         </h1>
 
@@ -28,31 +28,20 @@ export default async function TablesPage() {
 
             if (isOccupied && orderId) {
               return (
-                <Link
+                <OccupiedTableTile
                   key={table.id}
-                  href={`/orders/${orderId}`}
-                  className="flex aspect-square flex-col items-center justify-center rounded-2xl border border-amber-300 bg-amber-100 text-amber-900 dark:border-amber-700 dark:bg-amber-950 dark:text-amber-200"
-                >
-                  <span className="text-2xl font-semibold">
-                    {table.nomor}
-                  </span>
-                  <span className="text-xs font-medium">Terisi</span>
-                </Link>
+                  nomor={table.nomor}
+                  orderId={orderId}
+                />
               );
             }
 
             return (
-              <form key={table.id} action={startOrder.bind(null, table.id)}>
-                <button
-                  type="submit"
-                  className="flex aspect-square w-full flex-col items-center justify-center rounded-2xl border border-zinc-200 bg-white text-zinc-700 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-300"
-                >
-                  <span className="text-2xl font-semibold">
-                    {table.nomor}
-                  </span>
-                  <span className="text-xs font-medium">Kosong</span>
-                </button>
-              </form>
+              <EmptyTableTile
+                key={table.id}
+                nomor={table.nomor}
+                action={startOrder.bind(null, table.id)}
+              />
             );
           })}
         </div>

@@ -11,7 +11,7 @@ export default async function SettingsPage() {
     .single();
 
   return (
-    <div className="flex flex-1 items-center justify-center bg-zinc-50 px-4 py-12 dark:bg-black">
+    <div className="flex flex-1 items-center justify-center bg-paper px-4 py-12">
       <SettingsForm
         initialTaxPercent={data?.tax_percent ?? 0}
         initialServiceChargePercent={data?.service_charge_percent ?? 0}

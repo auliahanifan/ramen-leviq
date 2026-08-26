@@ -39,9 +39,9 @@ export default async function CheckoutPage({
   const action = payOrder.bind(null, id, order.table_id);
 
   return (
-    <div className="flex flex-1 flex-col items-center bg-zinc-50 px-4 py-8 dark:bg-black">
+    <div className="flex flex-1 flex-col items-center bg-paper px-4 py-8">
       <div className="w-full max-w-md">
-        <h1 className="mb-6 text-xl font-semibold text-zinc-900 dark:text-zinc-50">
+        <h1 className="mb-6 font-display text-display font-bold text-ink">
           Checkout Meja {order.tables?.nomor}
         </h1>
         <CheckoutForm

@@ -1,9 +1,11 @@
 import { notFound, redirect } from "next/navigation";
-import Link from "next/link";
 import { supabase } from "@/lib/supabase";
 import { addOrderItem, cancelOrder } from "./actions";
 import AddItemForm from "./add-item-form";
 import CancelOrderButton from "./cancel-order-button";
+import { Card } from "../../_components/card";
+import { ButtonLink } from "../../_components/button";
+import { Price } from "../../_components/price";
 
 export default async function OrderPage({
   params,
@@ -43,19 +45,20 @@ export default async function OrderPage({
 
   const addItemAction = addOrderItem.bind(null, id);
   const cancelAction = cancelOrder.bind(null, id, order.table_id);
+  const hasItems = Boolean(items && items.length > 0);
 
   return (
-    <div className="flex flex-1 flex-col bg-zinc-50 px-4 py-8 dark:bg-black">
+    <div className="flex flex-1 flex-col bg-paper px-4 py-8">
       <div className="mx-auto w-full max-w-2xl">
-        <h1 className="mb-6 text-xl font-semibold text-zinc-900 dark:text-zinc-50">
+        <h1 className="mb-6 font-display text-display font-bold text-ink">
           Meja {order.tables?.nomor}
         </h1>
 
-        <div className="mb-4 overflow-hidden rounded-2xl border border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-950">
+        <Card padding="none" className="mb-4">
           {items && items.length > 0 ? (
             <table className="w-full">
               <thead>
-                <tr className="border-b border-zinc-200 text-left text-xs font-medium uppercase text-zinc-500 dark:border-zinc-800 dark:text-zinc-400">
+                <tr className="border-b border-rule text-left text-xs font-semibold tracking-wide text-muted uppercase">
                   <th className="px-4 py-3">Menu</th>
                   <th className="px-4 py-3">Qty</th>
                   <th className="px-4 py-3 text-right">Subtotal</th>
@@ -63,42 +66,36 @@ export default async function OrderPage({
               </thead>
               <tbody>
                 {items.map((item) => (
-                  <tr
-                    key={item.id}
-                    className="border-b border-zinc-200 last:border-0 dark:border-zinc-800"
-                  >
-                    <td className="px-4 py-3 text-sm text-zinc-900 dark:text-zinc-50">
+                  <tr key={item.id} className="border-b border-rule last:border-0">
+                    <td className="px-4 py-3 text-sm text-ink">
                       {item.menu_items?.nama}
                     </td>
-                    <td className="px-4 py-3 text-sm text-zinc-600 dark:text-zinc-400">
+                    <td className="px-4 py-3 text-sm font-outlier text-ink-2">
                       {item.qty}
                     </td>
-                    <td className="px-4 py-3 text-right text-sm text-zinc-900 dark:text-zinc-50">
-                      Rp{(item.qty * item.price_at_order).toLocaleString("id-ID")}
+                    <td className="px-4 py-3 text-right text-sm text-ink">
+                      <Price value={item.qty * item.price_at_order} />
                     </td>
                   </tr>
                 ))}
               </tbody>
               <tfoot>
                 <tr>
-                  <td
-                    colSpan={2}
-                    className="px-4 py-3 text-sm font-medium text-zinc-900 dark:text-zinc-50"
-                  >
+                  <td colSpan={2} className="px-4 py-3 text-sm font-semibold text-ink">
                     Subtotal
                   </td>
-                  <td className="px-4 py-3 text-right text-sm font-medium text-zinc-900 dark:text-zinc-50">
-                    Rp{subtotal.toLocaleString("id-ID")}
+                  <td className="px-4 py-3 text-right text-sm font-semibold text-ink">
+                    <Price value={subtotal} />
                   </td>
                 </tr>
               </tfoot>
             </table>
           ) : (
-            <p className="px-4 py-8 text-center text-sm text-zinc-500 dark:text-zinc-400">
+            <p className="px-4 py-8 text-center text-sm text-muted">
               Belum ada item.
             </p>
           )}
-        </div>
+        </Card>
 
         <div className="mb-6">
           <AddItemForm action={addItemAction} menuItems={availableMenu ?? []} />
@@ -106,15 +103,12 @@ export default async function OrderPage({
 
         <div className="flex gap-3">
           <CancelOrderButton action={cancelAction} />
-          {items && items.length > 0 ? (
-            <Link
-              href={`/orders/${id}/checkout`}
-              className="flex-1 rounded-lg bg-zinc-900 px-4 py-3 text-center text-base font-medium text-white dark:bg-zinc-50 dark:text-zinc-900"
-            >
+          {hasItems ? (
+            <ButtonLink href={`/orders/${id}/checkout`} fullWidth>
               Checkout
-            </Link>
+            </ButtonLink>
           ) : (
-            <span className="flex-1 rounded-lg bg-zinc-200 px-4 py-3 text-center text-base font-medium text-zinc-400 dark:bg-zinc-800 dark:text-zinc-600">
+            <span className="flex min-h-14 flex-1 items-center justify-center rounded-button bg-paper-3 px-4 text-center text-base font-medium text-muted">
               Checkout
             </span>
           )}

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { supabase } from "@/lib/supabase";
+import { Card } from "../(app)/_components/card";
 
 export const dynamic = "force-dynamic";
 
@@ -41,34 +42,34 @@ export default async function PromptHistoriesPage() {
   );
 
   return (
-    <div className="flex flex-1 flex-col bg-zinc-50 px-4 py-8 dark:bg-black">
+    <div className="flex flex-1 flex-col bg-paper px-4 py-8">
       <div className="mx-auto w-full max-w-2xl">
-        <h1 className="mb-2 text-xl font-semibold text-zinc-900 dark:text-zinc-50">
+        <h1 className="mb-2 font-display text-2xl font-bold text-ink">
           Riwayat Prompt
         </h1>
-        <p className="mb-6 text-sm text-zinc-500 dark:text-zinc-400">
+        <p className="mb-6 text-sm text-muted">
           Kumpulan prompt asli yang dipakai untuk membangun project ini,
           dikelompokkan per hari.
         </p>
 
         {dates.length === 0 ? (
-          <p className="text-sm text-zinc-500 dark:text-zinc-400">
-            Belum ada prompt yang tercatat.
-          </p>
+          <p className="text-sm text-muted">Belum ada prompt yang tercatat.</p>
         ) : (
           <ul className="flex flex-col gap-3">
             {dates.map((date) => (
               <li key={date}>
-                <Link
-                  href={`/prompt-histories/${date}`}
-                  className="flex items-center justify-between rounded-2xl border border-zinc-200 bg-white px-5 py-4 text-zinc-900 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-50"
-                >
-                  <span className="text-sm font-medium">
-                    {formatDateLabel(date)}
-                  </span>
-                  <span className="text-xs text-zinc-500 dark:text-zinc-400">
-                    {countByDate.get(date)} prompt
-                  </span>
+                <Link href={`/prompt-histories/${date}`}>
+                  <Card
+                    padding="compact"
+                    className="flex items-center justify-between text-ink"
+                  >
+                    <span className="text-sm font-medium">
+                      {formatDateLabel(date)}
+                    </span>
+                    <span className="text-xs text-muted">
+                      {countByDate.get(date)} prompt
+                    </span>
+                  </Card>
                 </Link>
               </li>
             ))}

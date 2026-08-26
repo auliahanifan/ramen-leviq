@@ -1,6 +1,9 @@
 import { notFound, redirect } from "next/navigation";
-import Link from "next/link";
 import { supabase } from "@/lib/supabase";
+import { Card } from "../../../_components/card";
+import { ButtonLink } from "../../../_components/button";
+import { LineRow } from "../../../_components/line-row";
+import { Price } from "../../../_components/price";
 
 const PAYMENT_METHOD_LABELS: Record<string, string> = {
   cash: "Tunai",
@@ -8,10 +11,6 @@ const PAYMENT_METHOD_LABELS: Record<string, string> = {
   card: "Kartu",
   transfer: "Transfer",
 };
-
-function formatRupiah(n: number) {
-  return `Rp${Math.round(n).toLocaleString("id-ID")}`;
-}
 
 export default async function ReceiptPage({
   params,
@@ -47,83 +46,63 @@ export default async function ReceiptPage({
       : null;
 
   return (
-    <div className="flex flex-1 flex-col items-center bg-zinc-50 px-4 py-8 dark:bg-black">
-      <div className="w-full max-w-md rounded-2xl border border-zinc-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-950">
-        <h1 className="mb-1 text-xl font-semibold text-zinc-900 dark:text-zinc-50">
-          Struk Pembayaran
-        </h1>
-        <p className="mb-6 text-sm text-zinc-500 dark:text-zinc-400">
-          Meja {order.tables?.nomor} &middot;{" "}
-          {order.paid_at
-            ? new Date(order.paid_at).toLocaleString("id-ID")
-            : ""}
-        </p>
+    <div className="flex flex-1 flex-col items-center bg-paper px-4 py-8">
+      <div className="relative w-full max-w-md">
+        <div className="absolute -top-3 -right-2 z-10 rotate-12 rounded border-2 border-accent-2 px-3 py-1 text-sm font-semibold tracking-widest text-accent-2 uppercase">
+          Lunas
+        </div>
 
-        <div className="mb-4 space-y-1 border-b border-zinc-200 pb-4 text-sm dark:border-zinc-800">
-          {items?.map((item) => (
-            <div key={item.id} className="flex justify-between">
-              <span className="text-zinc-700 dark:text-zinc-300">
-                {item.menu_items?.nama} x{item.qty}
-              </span>
-              <span className="text-zinc-900 dark:text-zinc-50">
-                {formatRupiah(item.qty * item.price_at_order)}
+        <Card accentEdge>
+          <h1 className="mb-1 font-display text-2xl font-bold text-ink">
+            Struk Pembayaran
+          </h1>
+          <p className="mb-6 text-sm text-muted">
+            Meja {order.tables?.nomor} &middot;{" "}
+            {order.paid_at
+              ? new Date(order.paid_at).toLocaleString("id-ID")
+              : ""}
+          </p>
+
+          <div className="mb-4 space-y-1 border-b border-rule pb-4 text-sm">
+            {items?.map((item) => (
+              <div key={item.id} className="flex justify-between">
+                <span className="text-ink-2">
+                  {item.menu_items?.nama} x{item.qty}
+                </span>
+                <Price value={item.qty * item.price_at_order} className="text-ink" />
+              </div>
+            ))}
+          </div>
+
+          <div className="mb-4 space-y-1 border-b border-rule pb-4">
+            <LineRow label="Subtotal" value={order.subtotal} />
+            <LineRow label="Diskon" value={order.discount} sign="-" />
+            <LineRow label="Service Charge" value={order.service_charge} sign="+" />
+            <LineRow label="PPN" value={order.tax} sign="+" />
+          </div>
+
+          <div className="mb-6 space-y-1">
+            <LineRow label="Total" value={order.total} emphasis />
+            <div className="flex justify-between text-sm text-ink-2">
+              <span>Metode Pembayaran</span>
+              <span>
+                {order.payment_method
+                  ? PAYMENT_METHOD_LABELS[order.payment_method]
+                  : "-"}
               </span>
             </div>
-          ))}
-        </div>
+            {cashPaidNum !== null && change !== null && (
+              <>
+                <LineRow label="Dibayar" value={cashPaidNum} />
+                <LineRow label="Kembalian" value={change} />
+              </>
+            )}
+          </div>
 
-        <div className="mb-4 space-y-1 border-b border-zinc-200 pb-4 text-sm dark:border-zinc-800">
-          <div className="flex justify-between text-zinc-700 dark:text-zinc-300">
-            <span>Subtotal</span>
-            <span>{formatRupiah(order.subtotal)}</span>
-          </div>
-          <div className="flex justify-between text-zinc-700 dark:text-zinc-300">
-            <span>Diskon</span>
-            <span>-{formatRupiah(order.discount)}</span>
-          </div>
-          <div className="flex justify-between text-zinc-700 dark:text-zinc-300">
-            <span>Service Charge</span>
-            <span>+{formatRupiah(order.service_charge)}</span>
-          </div>
-          <div className="flex justify-between text-zinc-700 dark:text-zinc-300">
-            <span>PPN</span>
-            <span>+{formatRupiah(order.tax)}</span>
-          </div>
-        </div>
-
-        <div className="mb-4 space-y-1 text-sm">
-          <div className="flex justify-between text-base font-semibold text-zinc-900 dark:text-zinc-50">
-            <span>Total</span>
-            <span>{formatRupiah(order.total)}</span>
-          </div>
-          <div className="flex justify-between text-zinc-700 dark:text-zinc-300">
-            <span>Metode Pembayaran</span>
-            <span>
-              {order.payment_method
-                ? PAYMENT_METHOD_LABELS[order.payment_method]
-                : "-"}
-            </span>
-          </div>
-          {cashPaidNum !== null && change !== null && (
-            <>
-              <div className="flex justify-between text-zinc-700 dark:text-zinc-300">
-                <span>Dibayar</span>
-                <span>{formatRupiah(cashPaidNum)}</span>
-              </div>
-              <div className="flex justify-between text-zinc-700 dark:text-zinc-300">
-                <span>Kembalian</span>
-                <span>{formatRupiah(change)}</span>
-              </div>
-            </>
-          )}
-        </div>
-
-        <Link
-          href="/"
-          className="block w-full rounded-lg bg-zinc-900 px-4 py-3 text-center text-base font-medium text-white dark:bg-zinc-50 dark:text-zinc-900"
-        >
-          Kembali ke Meja
-        </Link>
+          <ButtonLink href="/" fullWidth>
+            Kembali ke Meja
+          </ButtonLink>
+        </Card>
       </div>
     </div>
   );

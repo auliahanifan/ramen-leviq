@@ -3,6 +3,9 @@
 import Link from "next/link";
 import { useMenuItemActions } from "./use-menu-item-actions";
 import type { Tables } from "@/lib/database.types";
+import { Badge } from "../_components/badge";
+import { Price } from "../_components/price";
+import { ErrorText } from "../_components/field";
 
 export default function MenuItemRow({
   item,
@@ -13,39 +16,24 @@ export default function MenuItemRow({
     useMenuItemActions(item);
 
   return (
-    <tr className="border-b border-zinc-200 dark:border-zinc-800">
-      <td className="px-4 py-3 text-sm text-zinc-900 dark:text-zinc-50">
-        {item.nama}
-      </td>
-      <td className="px-4 py-3 text-sm text-zinc-600 dark:text-zinc-400">
-        {item.kategori}
-      </td>
-      <td className="px-4 py-3 text-sm text-zinc-900 dark:text-zinc-50">
-        Rp{item.harga.toLocaleString("id-ID")}
+    <tr className="border-b border-rule">
+      <td className="px-4 py-3 text-sm text-ink">{item.nama}</td>
+      <td className="px-4 py-3 text-sm text-ink-2">{item.kategori}</td>
+      <td className="px-4 py-3 text-sm text-ink">
+        <Price value={item.harga} />
       </td>
       <td className="px-4 py-3">
-        <button
-          type="button"
-          onClick={handleToggle}
-          disabled={isPending}
-          className={`rounded-full px-3 py-1 text-xs font-medium disabled:opacity-60 ${
-            item.is_available
-              ? "bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300"
-              : "bg-zinc-200 text-zinc-600 dark:bg-zinc-800 dark:text-zinc-400"
-          }`}
-        >
-          {item.is_available ? "Tersedia" : "Habis"}
+        <button type="button" onClick={handleToggle} disabled={isPending} className="disabled:opacity-60">
+          <Badge tone={item.is_available ? "available" : "unavailable"}>
+            {item.is_available ? "Tersedia" : "Habis"}
+          </Badge>
         </button>
-        {error && (
-          <p className="mt-1 text-xs text-red-600 dark:text-red-400">
-            {error}
-          </p>
-        )}
+        {error && <ErrorText>{error}</ErrorText>}
       </td>
       <td className="px-4 py-3 text-right text-sm">
         <Link
           href={`/menu/${item.id}/edit`}
-          className="mr-3 font-medium text-zinc-700 hover:underline dark:text-zinc-300"
+          className="mr-3 font-medium text-ink-2 hover:underline"
         >
           Edit
         </Link>
@@ -53,7 +41,7 @@ export default function MenuItemRow({
           type="button"
           onClick={handleDelete}
           disabled={isPending}
-          className="font-medium text-red-600 hover:underline disabled:opacity-60 dark:text-red-400"
+          className="font-medium text-error hover:underline disabled:opacity-60"
         >
           Hapus
         </button>

@@ -13,13 +13,17 @@ export function parsePeriod(value: string | undefined): Period {
   return "hari";
 }
 
-function todayWIBKey(): string {
+export function dateKeyInWIB(d: Date): string {
   return new Intl.DateTimeFormat("en-CA", {
     timeZone: TIMEZONE,
     year: "numeric",
     month: "2-digit",
     day: "2-digit",
-  }).format(new Date());
+  }).format(d);
+}
+
+function todayWIBKey(): string {
+  return dateKeyInWIB(new Date());
 }
 
 function wibMidnight(year: number, month: number, day: number): Date {
@@ -58,4 +62,25 @@ export function getPeriodRange(period: Period): { start: Date; end: Date } {
     1
   );
   return { start, end };
+}
+
+/**
+ * Every WIB calendar day in [start, end), inclusive of empty days.
+ * Safe to step by exactly 24h because Asia/Jakarta (WIB) has no DST.
+ */
+export function getDailyBuckets(
+  start: Date,
+  end: Date
+): { date: string; label: string }[] {
+  const dayLabel = new Intl.DateTimeFormat("id-ID", {
+    timeZone: TIMEZONE,
+    day: "2-digit",
+    month: "short",
+  });
+  const buckets: { date: string; label: string }[] = [];
+  for (let t = start.getTime(); t < end.getTime(); t += 24 * 60 * 60 * 1000) {
+    const cursor = new Date(t);
+    buckets.push({ date: dateKeyInWIB(cursor), label: dayLabel.format(cursor) });
+  }
+  return buckets;
 }

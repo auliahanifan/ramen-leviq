@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { supabase } from "@/lib/supabase";
 import {
+  dateKeyInWIB,
+  getDailyBuckets,
   getPeriodRange,
   parsePeriod,
   PERIOD_LABELS,
@@ -10,6 +12,10 @@ import { Card } from "../_components/card";
 import { LineRow } from "../_components/line-row";
 import TopMenuRow, { type TopMenuItem } from "./top-menu-row";
 import TopMenuCard from "./top-menu-card";
+import DailyTrendChart from "./daily-trend-chart";
+import PaymentMethodDonut from "./payment-method-donut";
+import { getSliceColor } from "./payment-method-colors";
+import TopMenuBarChart from "./top-menu-bar-chart";
 
 export const dynamic = "force-dynamic";
 
@@ -34,7 +40,7 @@ export default async function LaporanPage({
 
   const { data: orders } = await supabase
     .from("orders")
-    .select("id, total, discount, service_charge, tax, payment_method")
+    .select("id, total, discount, service_charge, tax, payment_method, paid_at")
     .eq("status", "paid")
     .gte("paid_at", start.toISOString())
     .lt("paid_at", end.toISOString());
@@ -56,6 +62,23 @@ export default async function LaporanPage({
       (omzetByMethod.get(order.payment_method) ?? 0) + order.total
     );
   }
+
+  const paymentMethodData = PAYMENT_METHODS.map((method) => ({
+    method,
+    label: PAYMENT_METHOD_LABELS[method],
+    omzet: omzetByMethod.get(method) ?? 0,
+  }));
+
+  const omzetPerDay = new Map<string, number>();
+  for (const order of paidOrders) {
+    if (!order.paid_at) continue;
+    const key = dateKeyInWIB(new Date(order.paid_at));
+    omzetPerDay.set(key, (omzetPerDay.get(key) ?? 0) + order.total);
+  }
+  const dailyOmzet = getDailyBuckets(start, end).map((bucket) => ({
+    ...bucket,
+    omzet: omzetPerDay.get(bucket.date) ?? 0,
+  }));
 
   const orderIds = paidOrders.map((o) => o.id);
   const { data: orderItems } =
@@ -84,6 +107,10 @@ export default async function LaporanPage({
     if (b.omzet !== a.omzet) return b.omzet - a.omzet;
     return a.nama.localeCompare(b.nama);
   });
+
+  const topMenuChartData = [...topMenu]
+    .sort((a, b) => b.omzet - a.omzet)
+    .slice(0, 5);
 
   return (
     <div className="flex flex-1 flex-col bg-paper px-4 py-8">
@@ -123,19 +150,54 @@ export default async function LaporanPage({
           </div>
         </Card>
 
+        {period !== "hari" && (
+          <Card className="mb-4">
+            <h2 className="mb-3 text-xs font-semibold tracking-wide text-muted uppercase">
+              Tren Omzet Harian
+            </h2>
+            {dailyOmzet.some((d) => d.omzet > 0) ? (
+              <DailyTrendChart data={dailyOmzet} />
+            ) : (
+              <p className="text-center text-sm text-muted">
+                Belum ada omzet di periode ini.
+              </p>
+            )}
+          </Card>
+        )}
+
         <Card className="mb-4">
           <h2 className="mb-3 text-xs font-semibold tracking-wide text-muted uppercase">
             Metode Pembayaran
           </h2>
-          <div className="space-y-2">
-            {PAYMENT_METHODS.map((method) => (
-              <LineRow
-                key={method}
-                label={PAYMENT_METHOD_LABELS[method]}
-                value={omzetByMethod.get(method) ?? 0}
-              />
-            ))}
-          </div>
+          {totalOmzet > 0 ? (
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-6">
+              <PaymentMethodDonut data={paymentMethodData} />
+              <div className="min-w-0 flex-1 space-y-2">
+                {paymentMethodData.map((entry) => (
+                  <LineRow
+                    key={entry.method}
+                    label={
+                      <span className="inline-flex items-center gap-2">
+                        <span
+                          className="inline-block h-2 w-2 shrink-0 rounded-full"
+                          style={{ background: getSliceColor(paymentMethodData, entry.method) }}
+                          aria-hidden
+                        />
+                        {entry.label}
+                      </span>
+                    }
+                    value={entry.omzet}
+                  />
+                ))}
+              </div>
+            </div>
+          ) : (
+            <div className="space-y-2">
+              {paymentMethodData.map((entry) => (
+                <LineRow key={entry.method} label={entry.label} value={entry.omzet} />
+              ))}
+            </div>
+          )}
         </Card>
 
         <Card className="mb-6">
@@ -155,6 +217,10 @@ export default async function LaporanPage({
 
         {topMenu.length > 0 ? (
           <>
+            <Card className="mb-4">
+              <TopMenuBarChart data={topMenuChartData} />
+            </Card>
+
             <Card padding="none" className="sm:hidden">
               {topMenu.map((item) => (
                 <TopMenuCard key={item.id} item={item} />

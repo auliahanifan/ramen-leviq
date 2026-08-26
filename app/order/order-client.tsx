@@ -6,6 +6,7 @@ import { Card } from "../(app)/_components/card";
 import { Button } from "../(app)/_components/button";
 import { Label, inputClass, ErrorText } from "../(app)/_components/field";
 import { Price } from "../(app)/_components/price";
+import { MenuPhotoPlaceholder } from "../(app)/_components/menu-photo-placeholder";
 
 const CUSTOMER_NAME_KEY = "ramen-order-customer-name";
 
@@ -155,7 +156,7 @@ export default function OrderClient({
                           className="h-16 w-16 shrink-0 rounded-input object-cover"
                         />
                       ) : (
-                        <div className="h-16 w-16 shrink-0 rounded-input bg-paper-3" />
+                        <MenuPhotoPlaceholder className="h-16 w-16 shrink-0 rounded-input" />
                       )}
 
                       <div className="min-w-0 flex-1">

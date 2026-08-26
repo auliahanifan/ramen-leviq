@@ -37,6 +37,7 @@ export default async function MenuPage() {
               <table className="w-full">
                 <thead>
                   <tr className="border-b border-rule text-left text-xs font-semibold tracking-wide text-muted uppercase">
+                    <th className="px-4 py-3">Foto</th>
                     <th className="px-4 py-3">Nama</th>
                     <th className="px-4 py-3">Kategori</th>
                     <th className="px-4 py-3">Harga</th>

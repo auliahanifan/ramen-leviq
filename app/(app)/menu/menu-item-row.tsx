@@ -6,6 +6,7 @@ import type { Tables } from "@/lib/database.types";
 import { Badge } from "../_components/badge";
 import { Price } from "../_components/price";
 import { ErrorText } from "../_components/field";
+import { MenuPhotoPlaceholder } from "../_components/menu-photo-placeholder";
 
 export default function MenuItemRow({
   item,
@@ -17,6 +18,19 @@ export default function MenuItemRow({
 
   return (
     <tr className="border-b border-rule">
+      <td className="px-4 py-3">
+        {item.image_url ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={item.image_url}
+            alt={item.nama}
+            loading="lazy"
+            className="h-10 w-10 rounded-input object-cover"
+          />
+        ) : (
+          <MenuPhotoPlaceholder className="h-10 w-10 rounded-input" />
+        )}
+      </td>
       <td className="px-4 py-3 text-sm text-ink">{item.nama}</td>
       <td className="px-4 py-3 text-sm text-ink-2">{item.kategori}</td>
       <td className="px-4 py-3 text-sm text-ink">

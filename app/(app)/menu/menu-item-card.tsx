@@ -6,6 +6,7 @@ import type { Tables } from "@/lib/database.types";
 import { Badge } from "../_components/badge";
 import { Price } from "../_components/price";
 import { ErrorText } from "../_components/field";
+import { MenuPhotoPlaceholder } from "../_components/menu-photo-placeholder";
 
 export default function MenuItemCard({
   item,
@@ -18,11 +19,24 @@ export default function MenuItemCard({
   return (
     <div className="border-b border-rule p-4 last:border-0">
       <div className="mb-2 flex items-start justify-between gap-3">
-        <div>
-          <p className="text-base font-medium text-ink">{item.nama}</p>
-          <p className="text-sm text-muted">
-            {item.kategori} &middot; <Price value={item.harga} />
-          </p>
+        <div className="flex items-start gap-3">
+          {item.image_url ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={item.image_url}
+              alt={item.nama}
+              loading="lazy"
+              className="h-12 w-12 shrink-0 rounded-input object-cover"
+            />
+          ) : (
+            <MenuPhotoPlaceholder className="h-12 w-12 shrink-0 rounded-input" />
+          )}
+          <div>
+            <p className="text-base font-medium text-ink">{item.nama}</p>
+            <p className="text-sm text-muted">
+              {item.kategori} &middot; <Price value={item.harga} />
+            </p>
+          </div>
         </div>
         <button
           type="button"
